@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}تعديل{% else %}إضافة{% endif %} خريج - نظام متابعة الخريجين</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --primary: #1A5F7A;
+            --primary-light: #2c8fb3;
+            --secondary: #F39C12;
+            --secondary-dark: #e67e22;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --shadow: 0 15px 35px rgba(0,0,0,0.1);
+            --shadow-sm: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        /* بطاقة الفورم */
+        .form-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        body.dark-mode .form-card {
+            background: #1e2a3a;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* الهيدر */
+        .form-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 35px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 4s infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+        
+        .form-header i {
+            font-size: 65px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .form-header h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .form-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+        
+        /* جسم الفورم */
+        .form-body {
+            padding: 35px;
+        }
+        
+        /* الأقسام */
+        .form-section {
+            background: var(--light);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode .form-section {
+            background: #2c3e50;
+        }
+        
+        .form-section:hover {
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+        }
+        
+        .section-title i {
+            margin-left: 10px;
+            color: var(--secondary);
+        }
+        
+        /* الحقول */
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        body.dark-mode .form-label {
+            color: #ecf0f1;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: var(--danger);
+        }
+        
+        .form-control, .form-select {
+            border-radius: var(--radius-sm);
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,95,122,0.2);
+        }
+        
+        .form-text {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* أزرار */
+        .btn-submit {
+            background: linear-gradient(95deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            background: linear-gradient(95deg, var(--secondary), var(--secondary-dark));
+            color: var(--primary);
+            transform: scale(1.02);
+        }
+        
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+        
+        /* رسائل التنبيه */
+        .alert-custom {
+            border-radius: var(--radius-sm);
+            padding: 12px 18px;
+            margin-bottom: 20px;
+        }
+        
+        /* روابط التواصل */
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .social-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .social-item i {
+            margin-left: 8px;
+        }
+        
+        /* تلميحات */
+        .hint-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* خطوط */
+        hr {
+            margin: 25px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container form-wrapper">
+    <div class="form-card">
+        <!-- الهيدر الترحيبي -->
+        <div class="form-header">
+            <i class="fas fa-user-graduate"></i>
+            <h2>{% if form.instance.pk %}تعديل بيانات الخريج{% else %}انضم إلى عائلة الخريجين 🌟{% endif %}</h2>
+            <p>{% if form.instance.pk %}حدث معلوماتك لتظل على تواصل{% else %}سجل الآن لتتمكن من إدارة ملفك المهني والتواصل مع الشركات{% endif %}</p>
+        </div>
+        
+        <!-- جسم الفورم -->
+        <div class="form-body">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-custom alert-dismissible fade show">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- القسم الأول: المعلومات الأساسية -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-id-card"></i> المعلومات الأساسية
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">الرقم الجامعي</label>
+                            {{ form.university_id }}
+                            <div class="hint-text"><i class="fas fa-info-circle"></i> مثال: 2024123456</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">سنة التخرج</label>
+                            {{ form.graduation_year }}
+                            <div class="hint-text"><i class="fas fa-calendar"></i> مثال: 2025</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+    <label class="form-label">المعدل التراكمي (GPA)</label>
+    {{ form.gpa }}
+    <div class="hint-text">
+        <i class="fas fa-chart-line"></i> 
+        الصيغ المسموحة: 
+        <span class="badge bg-secondary">55</span>
+        <span class="badge bg-secondary">55.8</span>
+        <span class="badge bg-secondary">55.88</span>
+        <span class="badge bg-secondary">3.75</span>
+    </div>
+    {% if form.gpa.errors %}
+    <div class="text-danger small mt-1">{{ form.gpa.errors }}</div>
+    {% endif %}
+</div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label required-field">التخصص الرئيسي</label>
+                            {{ form.major }}
+                            <div class="hint-text">مثال: هندسة برمجيات، طب، إدارة أعمال</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">التخصص الفرعي</label>
+                            {{ form.minor }}
+                            <div class="hint-text">اختياري</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">رقم الجوال (واتساب)</label>
+                            {{ form.phone }}
+                            <div class="hint-text"><i class="fab fa-whatsapp"></i> مثال: 777123456</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الحالة الوظيفية</label>
+                            {{ form.current_job_status }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- القسم الثاني: المعلومات المهنية -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-briefcase"></i> المعلومات المهنية
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المسمى الوظيفي الحالي</label>
+                            {{ form.current_job_title }}
+                            <div class="hint-text">مثال: مطور ويب، مهندس شبكات</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">الشركة الحالية</label>
+                            {{ form.current_company }}
+                            <div class="hint-text">مثال: شركة تقنية، بنك</div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">نبذة تعريفية عنك</label>
+                            {{ form.bio }}
+                            <div class="hint-text"><i class="fas fa-pen"></i> تحدث عن نفسك، خبراتك، طموحاتك (300 حرف)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- القسم الثالث: روابط التواصل الاجتماعي -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-share-alt"></i> روابط التواصل الاجتماعي
+                    </div>
+                    <div class="social-row">
+                        <div class="social-item">
+                            <label class="form-label"><i class="fab fa-linkedin text-primary"></i> LinkedIn</label>
+                            {{ form.linkedin_url }}
+                        </div>
+                        <div class="social-item">
+                            <label class="form-label"><i class="fab fa-github text-dark"></i> GitHub</label>
+                            {{ form.github_url }}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط فيسبوك" id="facebook_url">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط تويتر" id="twitter_url">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط انستقرام" id="instagram_url">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط تيليجرام" id="telegram_url">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط تيك توك" id="tiktok_url">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="url" class="form-control" placeholder="رابط يوتيوب" id="youtube_url">
+                        </div>
+                    </div>
+                    <div class="hint-text"><i class="fas fa-globe"></i> أضف روابط حساباتك لتسهيل التواصل معك</div>
+                </div>
+                
+                <!-- القسم الرابع: الملفات -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-paperclip"></i> الملفات والصورة
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-file-pdf text-danger"></i> السيرة الذاتية (PDF)</label>
+                            {{ form.cv_file }}
+                            <div class="hint-text">PDF فقط، الحد الأقصى 5MB</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-image"></i> الصورة الشخصية</label>
+                            {{ form.profile_picture }}
+                            <div class="hint-text">jpg, png, gif (يفضل مربعة)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <!-- الأزرار -->
+                <div class="d-flex justify-content-between gap-3">
+                    <a href="{% url 'graduate_list' %}" class="btn btn-cancel">
+                        <i class="fas fa-arrow-right"></i> إلغاء
+                    </a>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> {% if form.instance.pk %}تحديث البيانات{% else %}حفظ البيانات ونشر الملف{% endif %}
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-lock"></i> بياناتك آمنة ولن يتم مشاركتها مع أي طرف ثالث
+                    </small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if(darkModeToggle) {
+        darkModeToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+    }
+    if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
+</script>
+</body>
+</html>
