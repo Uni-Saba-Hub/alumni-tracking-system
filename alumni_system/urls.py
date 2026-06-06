@@ -7,7 +7,7 @@ from graduates.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),  # الصفحة الرئيسية تستخدم home view
+    path('', home, name='home'),  # ← هذا السطر المعدل
     path('home/', home, name='home_url'),
     path('graduates/', include('graduates.urls')),
     path('accounts/', include('accounts.urls')),
