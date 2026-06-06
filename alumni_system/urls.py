@@ -3,21 +3,19 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from graduates.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
-    path('home/', login_required(TemplateView.as_view(template_name='index.html')), name='home'),
+    path('', home, name='home'),  # الصفحة الرئيسية تستخدم home view
+    path('home/', home, name='home_url'),
     path('graduates/', include('graduates.urls')),
     path('accounts/', include('accounts.urls')),
     path('employers/', include('employers.urls')),
     path('jobs/', include('jobs.urls')),
     path('surveys/', include('surveys.urls')),
     path('dashboard/', include('dashboard.urls')),
-
-        path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
     path('sitemap.xml', TemplateView.as_view(template_name='sitemap.xml', content_type='application/xml')),
 ]
 
