@@ -142,11 +142,11 @@ def search_graduates(request):
 
     return render(request, 'graduates/graduate_list.html', {'graduates': graduates})
 
-
 def home(request):
     from graduates.models import Graduate
     from employers.models import Employer
     from jobs.models import Job
+    from dashboard.models import SuccessStory
 
     total_graduates = Graduate.objects.count()
     total_employers = Employer.objects.count()
@@ -163,13 +163,6 @@ def home(request):
         'employment_rate': employment_rate,
         'latest_graduates': Graduate.objects.all().order_by('-created_at')[:6],
         'latest_jobs': Job.objects.filter(is_active=True).order_by('-created_at')[:6],
-    }
-    return render(request, 'index.html', context)
-
-def home(request):
-    # ... الكود الموجود ...
-    context = {
-        # ... المتغيرات الموجودة ...
         'success_stories': SuccessStory.objects.filter(is_active=True)[:3],
     }
     return render(request, 'index.html', context)

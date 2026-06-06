@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 import random
 from .models import NormalUser
 
-
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -14,16 +13,19 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        print(f"محاولة تسجيل دخول: {username}")  # للتصحيح
+        
         user = authenticate(request, username=username, password=password)
-        if user:
+        if user is not None:
             login(request, user)
+            print(f"✅ نجح تسجيل الدخول: {username}")  # للتصحيح
             messages.success(request, f'مرحباً {username}، تم تسجيل الدخول بنجاح')
             return redirect('home')
         else:
+            print(f"❌ فشل تسجيل الدخول: {username}")  # للتصحيح
             messages.error(request, 'اسم المستخدم أو كلمة المرور غير صحيحة')
     
     return render(request, 'accounts/login.html')
-
 
 def logout_view(request):
     logout(request)

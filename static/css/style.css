@@ -607,3 +607,89 @@ body.dark-mode .dropdown-item:hover {
 body.dark-mode .dropdown-item i {
     color: #F39C12;
 }
+
+
+
+/* ========== تحسين العرض على الهواتف ========== */
+@media (max-width: 768px) {
+    /* القائمة الجانبية تصبح قابلة للطي */
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        right: -280px;
+        width: 260px;
+        height: 100%;
+        background: white;
+        z-index: 1000;
+        transition: 0.3s;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        border-radius: 0;
+    }
+    
+    body.dark-mode .sidebar {
+        background: #1e2a3a;
+    }
+    
+    .sidebar.open {
+        right: 0;
+    }
+    
+    /* زر القائمة المتنقلة */
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 1001;
+        background: #1A5F7A;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+    
+    /* إخفاء القائمة الجانبية العادية */
+    .col-lg-3 {
+        display: none;
+    }
+    
+    /* المحتوى الرئيسي يأخذ عرض كامل */
+    .col-lg-9 {
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    /* تكبير الخطوط قليلاً للهواتف */
+    body {
+        font-size: 14px;
+    }
+    
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.2rem; }
+}
+
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none;
+    }
+}
+
+
+@media (max-width: 576px) {
+    .stat-box h3 {
+        font-size: 1.2rem;
+    }
+    
+    .graduate-card h6,
+    .job-card h6 {
+        font-size: 0.85rem;
+    }
+    
+    .badge-verified,
+    .badge-job {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+    }
+}

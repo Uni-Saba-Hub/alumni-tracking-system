@@ -1,6 +1,8 @@
 from django import forms
 from .models import Survey, Event, SystemSetting, AdminProfile, Major, Skill, BannedWord
 from django.contrib.auth.models import User
+from graduates.models import Graduate
+
 
 class SurveyForm(forms.ModelForm):
     class Meta:
@@ -121,3 +123,30 @@ class BannedWordForm(forms.ModelForm):
 class VerificationReviewForm(forms.Form):
     action = forms.ChoiceField(choices=[('approve', 'قبول'), ('reject', 'رفض')], widget=forms.Select(attrs={'class': 'form-control'}))
     rejection_reason = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}), required=False)
+
+
+class GraduateForm(forms.ModelForm):
+    class Meta:
+        model = Graduate
+        fields = [
+            'university_id', 'graduation_year', 'major', 'minor',
+            'bio', 'current_job_status', 'current_job_title',
+            'current_company', 'cv_file', 'linkedin_url', 'github_url',
+            'profile_picture', 'phone', 'address'
+        ]
+        widgets = {
+            'university_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'graduation_year': forms.NumberInput(attrs={'class': 'form-control'}),
+            'major': forms.TextInput(attrs={'class': 'form-control'}),
+            'minor': forms.TextInput(attrs={'class': 'form-control'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'current_job_status': forms.Select(attrs={'class': 'form-control'}),
+            'current_job_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'current_company': forms.TextInput(attrs={'class': 'form-control'}),
+            'cv_file': forms.FileInput(attrs={'class': 'form-control'}),
+            'linkedin_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'github_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+        }

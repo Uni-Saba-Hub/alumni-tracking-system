@@ -25,6 +25,7 @@ class Graduate(models.Model):
     linkedin_url = models.URLField(blank=True, null=True)
     github_url = models.URLField(blank=True, null=True)
     phone = models.CharField("رقم الجوال", max_length=15, blank=True, null=True)
+    address = models.TextField("العنوان", blank=True, null=True)
     is_verified = models.BooleanField("حساب موثق", default=False)
     profile_views = models.IntegerField("عدد المشاهدات", default=0)
     reward_points = models.IntegerField("نقاط الحوافز", default=0)

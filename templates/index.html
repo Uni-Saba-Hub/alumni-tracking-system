@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>نظام متابعة الخريجين</title>
@@ -35,7 +36,10 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
+ <!-- زر القائمة للهواتف -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i> القائمة
+    </button>
 <!-- Navbar -->
 <nav class="navbar">
     <div class="container">
@@ -305,6 +309,44 @@
                 });
         });
     }
+
+    // فتح وإغلاق القائمة الجانبية على الهواتف
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+        });
+        
+        // إغلاق القائمة عند الضغط خارجها
+        document.addEventListener('click', function(event) {
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    }
+
+     // طلب إذن الإشعارات
+    if ('Notification' in window) {
+        Notification.requestPermission().then(function(perm) {
+            if (perm === 'granted') {
+                console.log('✅ الإشعارات مفعلة');
+            }
+        });
+    }
+    
+    // دالة لعرض إشعار
+    function showNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: '/static/favicon.ico' });
+        }
+    }
+    
+    // مثال: إشعار ترحيبي
+    setTimeout(() => {
+        showNotification('مرحباً بك', 'نتمنى لك تجربة ممتعة على منصة متابعة الخريجين');
+    }, 3000);
 </script>
 </body>
 </html>

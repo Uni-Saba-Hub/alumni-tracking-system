@@ -10,6 +10,7 @@ from .forms import EmployerForm, EmployerVerificationForm
 from jobs.models import Job, JobApplication
 from graduates.models import Graduate  # ✅ أضف هذا السطر مهم جداً
 import re
+from dashboard.decorators import employer_required
 
 
 class EmployerListView(ListView):
@@ -84,28 +85,30 @@ class EmployerCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, '✅ تم تسجيل الشركة بنجاح! سيتم مراجعة طلبك قريباً')
         return response
 
-
 class EmployerUpdateView(LoginRequiredMixin, UpdateView):
     model = Employer
     form_class = EmployerForm
     template_name = 'employers/employer_form.html'
     success_url = reverse_lazy('employer_list')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, '✅ تم تحديث بيانات الشركة بنجاح')
-        return response
+    
+    def get_queryset(self):
+        # فقط ملف شركته
+        return self.model.objects.filter(user=self.request.user)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'employer_profile'):
+            messages.error(request, 'يجب أن تكون مسجلاً كشركة')
+            return redirect('employer_create')
+        return super().dispatch(request, *args, **kwargs)
 
 
 class EmployerDeleteView(LoginRequiredMixin, DeleteView):
     model = Employer
     success_url = reverse_lazy('employer_list')
     template_name = 'employers/employer_confirm_delete.html'
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, '✅ تم حذف الشركة بنجاح')
-        return super().delete(request, *args, **kwargs)
-
+    
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 # ========== الدوال المساعدة (خارج الكلاسات) ==========
 

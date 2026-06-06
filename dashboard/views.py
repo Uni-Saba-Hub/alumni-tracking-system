@@ -1,25 +1,30 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from django.db.models import Count, Q, Avg
+from django.urls import reverse_lazy
+from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from django.core.paginator import Paginator
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
 from .models import (
     AdminProfile, VerificationRequest, EmployerVerificationRequest,
     Survey, SurveyResponse, Event, EventAttendance, Report,
-    SystemSetting, AuditLog, Major, Skill, BannedWord
+    SystemSetting, AuditLog, Major, Skill, BannedWord, SuccessStory
+)
+from .forms import (
+    SurveyForm, EventForm, SystemSettingForm, AdminProfileForm,
+    MajorForm, SkillForm, BannedWordForm, VerificationReviewForm
 )
 from graduates.models import Graduate
 from employers.models import Employer
 from jobs.models import Job, JobApplication
 from django.contrib.auth.models import User
-from .forms import (
-    SurveyForm, EventForm, SystemSettingForm, AdminProfileForm,
-    MajorForm, SkillForm, BannedWordForm, VerificationReviewForm
-)
+from .forms import GraduateForm
 import json
-from django.http import JsonResponse, HttpResponse
-from django.template.loader import render_to_string
 
 
 # ========== الصفحة الرئيسية للوحة التحكم ==========
@@ -584,3 +589,32 @@ def manage_skills(request):
     
     skills = Skill.objects.all().order_by('name')
     return render(request, 'dashboard/manage_skills.html', {'skills': skills, 'form': form})
+
+
+
+# إضافة صلاحية الخريج لتحديث ملفه فقط
+class GraduateUpdateView(LoginRequiredMixin, UpdateView):
+    model = Graduate
+    form_class = GraduateForm
+    template_name = 'graduates/graduate_form.html'
+    success_url = reverse_lazy('graduate_list')
+    
+    def get_queryset(self):
+        # فقط ملفه الشخصي
+        return self.model.objects.filter(user=self.request.user)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'graduate_profile'):
+            messages.error(request, 'يجب أن تكون مسجلاً كخريج')
+            return redirect('graduate_create')
+        return super().dispatch(request, *args, **kwargs)
+
+
+# إضافة صلاحية الخريج لحذف ملفه فقط
+class GraduateDeleteView(LoginRequiredMixin, DeleteView):
+    model = Graduate
+    success_url = reverse_lazy('graduate_list')
+    template_name = 'graduates/graduate_confirm_delete.html'
+    
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
