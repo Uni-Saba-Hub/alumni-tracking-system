@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# Environment
+venv/
+env/
+.env
+.venv
+
+# Keys & Secrets (⚠️ مهم جداً)
+*.pem
+private_key.pem
+public_key.pem
+*.key
+*.crt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & Temp
+*.log
+*.tmp
+project_files.txt
+project_info.txt
+%%f
+
+# Django
+staticfiles/
+*.mo
+
+# Custom scripts (اختياري)
+add_i18n.py
+translate_texts.py
+translate.bat
