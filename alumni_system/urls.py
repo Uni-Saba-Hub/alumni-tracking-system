@@ -3,14 +3,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.contrib.auth.views import LoginView  # ✅ إضافة هذا السطر
 from graduates.views import home
 from . import views
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),
-    path('home/', home, name='home_url'),
+    # ✅ تغيير الصفحة الرئيسية إلى صفحة تسجيل الدخول
+    path('', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('home/', home, name='home'),  # تبقى الصفحة الرئيسية بعد تسجيل الدخول
     path('graduates/', include('graduates.urls')),
     path('accounts/', include('accounts.urls')),
     path('employers/', include('employers.urls')),
@@ -23,7 +25,8 @@ urlpatterns = [
     path('groups/', include('groups.urls')),
     path('chatbot/', include('chatbot.urls')),
     path('api/', include('api.urls')),
-path('setlang/<str:language_code>/', views.set_language, name='set_language'),    path('i18n/', include('django.conf.urls.i18n')),
+    path('setlang/<str:language_code>/', views.set_language, name='set_language'),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 if settings.DEBUG:
