@@ -42,9 +42,37 @@ from employers.models import Employer
 from jobs.models import Job, JobApplication
 from django.contrib.auth.models import User
 from groups.models import Group
-# ========== الصفحة الرئيسية للوحة التحكم ==========
 
-@staff_member_required
+# ============================================================
+# ✅ ديكور مخصص للتحقق من صلاحيات المشرف (بديل staff_member_required)
+# ============================================================
+def is_admin(user):
+    """التحقق من أن المستخدم لديه صلاحيات إدارية"""
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    try:
+        if hasattr(user, 'admin_profile') and user.admin_profile.is_active:
+            return user.admin_profile.admin_level in ['super_admin', 'admin']
+    except:
+        pass
+    return False
+
+def admin_required(view_func):
+    """ديكور للتحقق من صلاحيات المشرف قبل تنفيذ الـ View"""
+    def wrapper(request, *args, **kwargs):
+        if is_admin(request.user):
+            return view_func(request, *args, **kwargs)
+        messages.error(request, "غير مصرح لك بالوصول إلى هذه الصفحة.")
+        return redirect('home')
+    return wrapper
+
+# ============================================================
+# ========== الصفحة الرئيسية للوحة التحكم ==========
+# ============================================================
+
+@admin_required
 def admin_dashboard(request):
     # ============================================================
     # 1. حساب الأعداد الأساسية
@@ -195,7 +223,7 @@ def admin_dashboard(request):
 
 # ========== إدارة الخريجين ==========
 
-@staff_member_required
+@admin_required
 def manage_graduates(request):
     graduates = Graduate.objects.all().order_by('-created_at')
     
@@ -232,7 +260,7 @@ def manage_graduates(request):
     return render(request, 'dashboard/manage_graduates.html', context)
 
 
-@staff_member_required
+@admin_required
 def verify_graduate(request, pk):
     graduate = get_object_or_404(Graduate, pk=pk)
     
@@ -347,7 +375,7 @@ def verify_graduate(request, pk):
     return render(request, 'dashboard/verify_graduate.html', {'graduate': graduate, 'verification': verification, 'form': form})
 # ========== إدارة الشركات ==========
 
-@staff_member_required
+@admin_required
 def manage_employers(request):
     employers = Employer.objects.all().order_by('-created_at')
     
@@ -377,7 +405,7 @@ def manage_employers(request):
     return render(request, 'dashboard/manage_employers.html', context)
 
 
-@staff_member_required
+@admin_required
 def verify_employer(request, pk):
     employer = get_object_or_404(Employer, pk=pk)
     verification = get_object_or_404(EmployerVerificationRequest, employer=employer, status='pending')
@@ -440,7 +468,7 @@ def verify_employer(request, pk):
 
 # ========== إدارة الاستبيانات ==========
 
-@staff_member_required
+@admin_required
 def manage_surveys(request):
     surveys = Survey.objects.all().order_by('-created_at')
     paginator = Paginator(surveys, 20)
@@ -455,7 +483,7 @@ def manage_surveys(request):
     }
     return render(request, 'dashboard/manage_surveys.html', context)
 
-@staff_member_required
+@admin_required
 def create_survey(request):
     if request.method == 'POST':
         form = SurveyForm(request.POST)
@@ -470,7 +498,7 @@ def create_survey(request):
     return render(request, 'dashboard/survey_form.html', {'form': form, 'title': 'إنشاء استبيان جديد'})
 
 
-@staff_member_required
+@admin_required
 def edit_survey(request, pk):
     survey = get_object_or_404(Survey, pk=pk)
     if request.method == 'POST':
@@ -484,7 +512,7 @@ def edit_survey(request, pk):
     return render(request, 'dashboard/survey_form.html', {'form': form, 'title': 'تعديل الاستبيان'})
 
 
-@staff_member_required
+@admin_required
 def delete_survey(request, pk):
     survey = get_object_or_404(Survey, pk=pk)
     survey.delete()
@@ -494,7 +522,7 @@ def delete_survey(request, pk):
 
 # ========== إدارة الفعاليات ==========
 
-@staff_member_required
+@admin_required
 def manage_events(request):
     events = Event.objects.all().order_by('-date')
     paginator = Paginator(events, 20)
@@ -503,7 +531,7 @@ def manage_events(request):
     return render(request, 'dashboard/manage_events.html', {'events': events_page})
 
 
-@staff_member_required
+@admin_required
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
@@ -518,7 +546,7 @@ def create_event(request):
     return render(request, 'dashboard/event_form.html', {'form': form, 'title': 'إنشاء فعالية جديدة'})
 
 
-@staff_member_required
+@admin_required
 def edit_event(request, pk):
     event = get_object_or_404(Event, pk=pk)
     if request.method == 'POST':
@@ -532,7 +560,7 @@ def edit_event(request, pk):
     return render(request, 'dashboard/event_form.html', {'form': form, 'title': 'تعديل الفعالية'})
 
 
-@staff_member_required
+@admin_required
 def delete_event(request, pk):
     event = get_object_or_404(Event, pk=pk)
     event.delete()
@@ -542,13 +570,13 @@ def delete_event(request, pk):
 
 # ========== التقارير ==========
 
-@staff_member_required
+@admin_required
 def reports(request):
     reports = Report.objects.all().order_by('-generated_at')
     return render(request, 'dashboard/reports.html', {'reports': reports})
 
 
-@staff_member_required
+@admin_required
 def generate_report(request):
     if request.method == 'POST':
         report_type = request.POST.get('report_type')
@@ -607,7 +635,7 @@ def get_general_report_data():
 
 # ========== إعدادات النظام ==========
 
-@staff_member_required
+@admin_required
 def system_settings(request):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -652,7 +680,7 @@ def system_settings(request):
     return render(request, 'dashboard/system_settings.html', context)
 # ========== إدارة المشرفين ==========
 
-@staff_member_required
+@admin_required
 def manage_admins(request):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -661,7 +689,7 @@ def manage_admins(request):
     return render(request, 'dashboard/manage_admins.html', {'admins': admins})
 
 
-@staff_member_required
+@admin_required
 def add_admin(request):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -679,7 +707,7 @@ def add_admin(request):
     return render(request, 'dashboard/admin_form.html', {'form': form, 'title': 'إضافة مشرف جديد'})
 
 
-@staff_member_required
+@admin_required
 def edit_admin(request, pk):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -696,7 +724,7 @@ def edit_admin(request, pk):
     return render(request, 'dashboard/admin_form.html', {'form': form, 'title': 'تعديل بيانات المشرف'})
 
 
-@staff_member_required
+@admin_required
 def delete_admin(request, pk):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -712,7 +740,7 @@ def delete_admin(request, pk):
 
 # ========== سجل التدقيق ==========
 
-@staff_member_required
+@admin_required
 def audit_log(request):
     if not request.user.admin_profile.admin_level == 'super_admin':
         messages.error(request, 'غير مصرح لك بالوصول إلى هذه الصفحة')
@@ -732,7 +760,7 @@ def audit_log(request):
 
 # ========== إدارة التخصصات والمهارات (نسخة واحدة فقط) ==========
 
-@staff_member_required
+@admin_required
 def manage_majors(request):
     if request.method == 'POST':
         if 'delete_id' in request.POST:
@@ -751,7 +779,7 @@ def manage_majors(request):
     return render(request, 'dashboard/manage_majors.html', {'majors': majors, 'form': form})
 
 
-@staff_member_required
+@admin_required
 def manage_skills(request):
     if request.method == 'POST':
         if 'delete_id' in request.POST:
@@ -856,7 +884,7 @@ def success_stories_list(request):
     return render(request, 'dashboard/success_stories_list.html', {'stories': stories})
 
 
-@staff_member_required
+@admin_required
 def approve_success_story(request, pk):
     story = get_object_or_404(SuccessStory, pk=pk)
     story.status = 'approved'
@@ -865,7 +893,7 @@ def approve_success_story(request, pk):
     return redirect('dashboard:admin_dashboard')
 
 
-@staff_member_required
+@admin_required
 def reject_success_story(request, pk):
     story = get_object_or_404(SuccessStory, pk=pk)
     story.status = 'rejected'
@@ -876,7 +904,7 @@ def reject_success_story(request, pk):
 
 # ========== الموافقة على المجموعات ==========
 
-@staff_member_required
+@admin_required
 def approve_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
     group.status = 'approved'
@@ -896,7 +924,7 @@ def approve_group(request, pk):
     return redirect('dashboard:pending_requests')
 
 
-@staff_member_required
+@admin_required
 def reject_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
     group.status = 'rejected'
@@ -918,7 +946,7 @@ def reject_group(request, pk):
 
 # ========== صفحة الموافقات المركزية ==========
 
-@staff_member_required
+@admin_required
 def pending_requests(request):
     pending_graduates = VerificationRequest.objects.filter(status='pending').select_related('graduate__user')
     pending_employers = EmployerVerificationRequest.objects.filter(status='pending').select_related('employer__user')
@@ -936,7 +964,7 @@ def pending_requests(request):
 
 # ========== تعطيل/تفعيل مستخدم ==========
 
-@staff_member_required
+@admin_required
 def toggle_user_status(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     user.is_active = not user.is_active
@@ -948,7 +976,7 @@ def toggle_user_status(request, user_id):
 
 # ========== دوال الموافقة على المجموعات ==========
 
-@staff_member_required
+@admin_required
 def approve_group(request, pk):
     """✅ قبول مجموعة (تصبح ظاهرة للخريجين)"""
     group = get_object_or_404(Group, pk=pk)
@@ -970,7 +998,7 @@ def approve_group(request, pk):
     return redirect('dashboard:pending_requests')
 
 
-@staff_member_required
+@admin_required
 def reject_group(request, pk):
     """❌ رفض مجموعة مع إشعار للمنشئ"""
     group = get_object_or_404(Group, pk=pk)
@@ -991,7 +1019,7 @@ def reject_group(request, pk):
     messages.warning(request, f'❌ تم رفض مجموعة "{group.name}".')
     return redirect('dashboard:pending_requests')
 
-@staff_member_required
+@admin_required
 def approve_graduate(request, pk):
     graduate = get_object_or_404(Graduate, pk=pk)
     graduate.is_active = True
@@ -1011,7 +1039,7 @@ def approve_graduate(request, pk):
     return redirect('dashboard:pending_requests')
 
 
-@staff_member_required
+@admin_required
 def approve_graduate(request, pk):
     graduate = get_object_or_404(Graduate, pk=pk)
     graduate.is_active = True
@@ -1046,6 +1074,7 @@ def update_notification_preferences(request):
         messages.success(request, '✅ تم تحديث تفضيلات الإشعارات بنجاح.')
     return redirect('graduate_profile', pk=graduate.pk)
 
+@admin_required
 def publish_survey(request, survey_id):
     """نشر استبيان (إرسال إشعارات للخريجين)"""
     survey = get_object_or_404(Survey, id=survey_id, is_active=True)
@@ -1082,6 +1111,7 @@ def publish_survey(request, survey_id):
     messages.success(request, f'✅ تم نشر الاستبيان "{survey.title}" وإشعار {notification_count} خريج.')
     return redirect('dashboard:manage_surveys')
 
+@admin_required
 def get_dashboard_stats(request):
     """إحصائيات لوحة التحكم (API)"""
     from graduates.models import Graduate
@@ -1125,7 +1155,7 @@ def get_dashboard_stats(request):
         'monthly_applications': monthly_applications[::-1],
     })
 
-
+@admin_required
 def export_excel(request):
     """تصدير بيانات الخريجين إلى Excel"""
     import pandas as pd
@@ -1151,7 +1181,7 @@ def export_excel(request):
     df.to_excel(response, index=False, engine='openpyxl')
     return response
 
-
+@admin_required
 def export_pdf(request):
     """تصدير تقرير إلى PDF"""
     from graduates.models import Graduate
