@@ -96,8 +96,10 @@ print("📚 إنشاء التخصصات...")
 for major_name in majors_list:
     get_or_create_major(major_name)
 
-# 2. الخريجين (20) مع صور
+# 2. الخريجين (20) مع صور - مع تجنب تكرار الجامعة
 print("🎓 إنشاء الخريجين مع الصور...")
+used_universities = []  # لتتبع الجامعات المستخدمة
+
 for i in range(20):
     first = random.choice(first_names_male if i < 10 else first_names_female)
     last = random.choice(last_names)
@@ -108,16 +110,24 @@ for i in range(20):
     user.set_password('password123')
     user.save()
     
-    # ✅ استخدم النص مباشرة، وليس كائن Major
     major_name = random.choice(majors_list)
-    university = random.choice(universities)
+    
+    # ✅ اختيار جامعة غير مستخدمة (لتجنب التكرار)
+    available_universities = [u for u in universities if u not in used_universities]
+    if not available_universities:
+        # إذا نفذت الجامعات، استخدم أي جامعة مع إضافة رقم عشوائي
+        university = random.choice(universities) + f" ({i+1})"
+    else:
+        university = random.choice(available_universities)
+        used_universities.append(university)
+    
     city = random.choice(cities)
     
     grad, created = Graduate.objects.get_or_create(
         user=user,
         defaults={
-            'university_id': university,
-            'major': major_name,  # ✅ نص وليس كائن
+            'university_id': university,  # ✅ جامعة فريدة
+            'major': major_name,
             'graduation_year': random.randint(2019, 2026),
             'address': city,
             'current_job_status': random.choice(['working', 'seeking', 'freelance']),
@@ -131,7 +141,7 @@ for i in range(20):
     if created:
         avatar_url = get_avatar_url(f"{first}+{last}")
         download_and_attach_image(grad, 'profile_picture', avatar_url)
-        print(f"   ✅ {first} {last} - {major_name}")
+        print(f"   ✅ {first} {last} - {major_name} - {university}")
 
 # 3. الشركات (15) مع شعارات
 print("🏢 إنشاء الشركات مع الشعارات...")
@@ -178,7 +188,7 @@ for emp in created_employers:
                 'description': f"مطلوب {random.choice(job_titles)} للعمل في {emp.company_name}.",
                 'location': emp.headquarters,
                 'job_type': random.choice(['full_time', 'part_time', 'remote']),
-                'major_required': major_name,  # ✅ نص وليس كائن (إذا كان CharField)
+                'major_required': major_name,
                 'salary_min': random.randint(200, 1000) * 1000,
                 'salary_max': random.randint(1000, 2000) * 1000,
                 'is_active': True,
