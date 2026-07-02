@@ -18,12 +18,15 @@
             background: #f4f6f9;
             transition: background 0.3s ease;
         }
-        /* ====== القائمة الجانبية (Offcanvas للجوال) ====== */
+        
+        /* ====== القائمة الجانبية (على اليمين) ====== */
         .sidebar {
             background: linear-gradient(135deg, #1A5F7A, #0d3b4f);
             min-height: 100vh;
             padding: 20px 10px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* ✅ تم التعديل: القائمة على اليمين */
+            order: 2;
         }
         .sidebar .nav-link {
             color: rgba(255,255,255,0.8);
@@ -44,8 +47,21 @@
         .sidebar .nav-link:hover, .sidebar .nav-link.active {
             background: rgba(255,255,255,0.15);
             color: white;
-            transform: translateX(-4px);
+            transform: translateX(4px); /* ✅ اتجاه الحركة لليمين */
         }
+        
+        /* ====== المحتوى الرئيسي ====== */
+        .main-content {
+            padding: 20px 16px;
+            animation: fadeIn 0.4s ease;
+            /* ✅ تم التعديل: المحتوى على اليسار */
+            order: 1;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         /* ====== الشريط العلوي ====== */
         .navbar {
             background: white;
@@ -60,15 +76,7 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        /* ====== المحتوى الرئيسي ====== */
-        .main-content {
-            padding: 20px 16px;
-            animation: fadeIn 0.4s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
         /* ====== البطاقات ====== */
         .card {
             border-radius: 20px;
@@ -86,6 +94,7 @@
             padding: 18px 20px;
             font-weight: 600;
         }
+        
         /* ====== الوضع الداكن ====== */
         body.dark-mode {
             background: #1a1a2e;
@@ -107,18 +116,20 @@
             background: rgba(255,255,255,0.1);
             color: white;
         }
+        
         /* ====== تحسينات الجوال ====== */
         @media (max-width: 768px) {
+            /* ✅ تم التعديل: القائمة تنزلق من اليمين */
             .sidebar {
                 position: fixed;
                 top: 0;
-                right: 0;
+                left: 0;
                 width: 280px;
                 height: 100vh;
                 z-index: 1050;
-                transform: translateX(100%);
+                transform: translateX(-100%);
                 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+                box-shadow: 8px 0 30px rgba(0,0,0,0.15);
                 overflow-y: auto;
                 padding-top: 60px;
             }
@@ -159,10 +170,6 @@
             .navbar-brand {
                 font-size: 1rem;
             }
-            /* أزرار تبديل اللغة في الجوال */
-            .btn-group .btn {
-                min-width: 60px;
-            }
         }
         @media (max-width: 576px) {
             .navbar .container-fluid {
@@ -184,6 +191,7 @@
                 min-width: 50px;
             }
         }
+        
         /* ====== زر العودة للأعلى ====== */
         #backToTop {
             position: fixed;
@@ -214,7 +222,8 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* ====== شريط التقدم العلوي (للإشعارات) ====== */
+        
+        /* ====== شريط التقدم العلوي ====== */
         .top-progress {
             position: fixed;
             top: 0;
@@ -225,7 +234,8 @@
             z-index: 9999;
             transition: width 0.6s ease;
         }
-        /* ====== تحسين عام للـ RTL ====== */
+        
+        /* ====== تحسين RTL للقائمة ====== */
         [dir="rtl"] .sidebar .nav-link i {
             margin-left: 10px;
             margin-right: 0;
@@ -238,6 +248,17 @@
             right: auto !important;
             left: 0 !important;
         }
+        /* ✅ في الجوال، القائمة تنزلق من اليمين لليسار */
+        [dir="rtl"] @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        
         /* ====== تنسيقات إضافية ====== */
         .badge-verified {
             background: #27ae60;
@@ -265,7 +286,6 @@
             50% { opacity: 1; }
             100% { opacity: 0.8; }
         }
-        /* تحسينات البطاقات الإحصائية */
         .stat-card {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -279,6 +299,11 @@
         .stat-card:hover .stat-icon {
             transform: scale(1.1) rotate(2deg);
         }
+        .bg-primary-soft { background: rgba(26, 95, 122, 0.10); }
+        .bg-success-soft { background: rgba(46, 204, 113, 0.10); }
+        .bg-warning-soft { background: rgba(243, 156, 18, 0.10); }
+        .bg-info-soft { background: rgba(52, 152, 219, 0.10); }
+        .bg-success-subtle { background: rgba(46, 204, 113, 0.15); color: #1a8a4a; }
     </style>
 </head>
 <body>
@@ -291,7 +316,7 @@
 
 <div class="container-fluid p-0">
     <div class="row g-0">
-        <!-- Sidebar -->
+        <!-- ✅ القائمة الجانبية (على اليمين) -->
         <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
             <h4 class="text-white text-center mb-4 mt-2">
                 <i class="fas fa-graduation-cap"></i> {% trans "الإدارة" %}
@@ -333,8 +358,8 @@
             </div>
         </div>
         
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
+        <!-- ✅ المحتوى الرئيسي (على اليسار) -->
+        <div class="col-md-9 col-lg-10 main-content">
             <!-- Navbar -->
             <nav class="navbar">
                 <div class="container-fluid">
@@ -343,7 +368,6 @@
                     </button>
                     
                     <div class="d-flex align-items-center gap-3 ms-auto">
-                        <!-- أزرار تبديل اللغة -->
                         <div class="btn-group" role="group">
                             <button onclick="setLanguage('ar')" class="btn btn-sm btn-outline-primary">🇸🇦 عربي</button>
                             <button onclick="setLanguage('en')" class="btn btn-sm btn-outline-primary">🇬🇧 English</button>
@@ -404,7 +428,7 @@
     });
     if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
 
-    // ====== القائمة الجانبية للجوال (Offcanvas) ======
+    // ====== القائمة الجانبية للجوال ======
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const toggleBtn = document.getElementById('sidebarToggle');
@@ -423,7 +447,6 @@
     toggleBtn?.addEventListener('click', openSidebar);
     overlay?.addEventListener('click', closeSidebar);
 
-    // إغلاق القائمة عند الضغط على أي رابط في الجوال
     document.querySelectorAll('.sidebar .nav-link').forEach(link => {
         link.addEventListener('click', () => {
             if (window.innerWidth < 768) closeSidebar();
@@ -438,13 +461,12 @@
     });
     backBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // ====== شريط التقدم العلوي (اختياري، يحاكي تحميل الصفحة) ======
+    // ====== شريط التقدم ======
     const progress = document.getElementById('topProgress');
     window.addEventListener('load', () => {
         progress.style.width = '100%';
         setTimeout(() => { progress.style.width = '0%'; }, 600);
     });
-    // عند التنقل بين الصفحات (إذا تم تحميل المحتوى ديناميكياً)
     document.addEventListener('click', (e) => {
         if (e.target.closest('a') && !e.target.closest('.btn-group')) {
             progress.style.width = '30%';
@@ -452,7 +474,7 @@
         }
     });
 
-    // ====== إغلاق التنبيهات تلقائياً بعد 5 ثوان ======
+    // ====== إغلاق التنبيهات تلقائياً ======
     document.querySelectorAll('.alert').forEach((alert, index) => {
         setTimeout(() => {
             alert.classList.add('fade');
