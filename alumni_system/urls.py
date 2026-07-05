@@ -17,12 +17,11 @@ urlpatterns = [
     path('', LoginView.as_view(template_name='accounts/login.html'), name='login'),
     
     # ============================================================
-    # ✅ Allauth (تسجيل جوجل، نسيت كلمة المرور)
+    # ✅ Allauth (معلق مؤقتاً حتى حل المشكلة)
     # ============================================================
-    path('auth/', include('allauth.urls')),
-    
+
     # ============================================================
-    # ✅ 2FA (معلق مؤقتاً حتى يتم حل المشكلة)
+    # ✅ 2FA (معلق)
     # ============================================================
     # path('2fa/', include('two_factor.urls')),
     
@@ -44,6 +43,8 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('setlang/<str:language_code>/', views.set_language, name='set_language'),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('university/', include('university.urls')),
+path('auth/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

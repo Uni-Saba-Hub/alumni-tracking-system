@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import random
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from .models import NormalUser
 
 def login_view(request):
@@ -105,3 +107,6 @@ def simple_register(request):
         return redirect('home')
     
     return redirect('landing')
+@login_required
+def account_view(request):
+    return render(request, 'accounts/account.html', {'user': request.user})
