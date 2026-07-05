@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'dashboard',
     'groups',
     'chatbot',
-    
+    'university',
+
     # ========== ✅ إضافات جديدة ==========
     # Allauth (تسجيل الدخول عبر Google - نسيت كلمة المرور)
     'allauth',
@@ -61,7 +62,6 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'two_factor',
 
-    'university',
 ]
 
 
