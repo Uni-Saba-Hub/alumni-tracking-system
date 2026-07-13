@@ -307,8 +307,8 @@ try:
     from django.apps import apps
     
     if apps.ready:
-        site = Site.objects.get_current()
-        site.domain = '127.0.0.1:8000'
+        site, created = Site.objects.get_or_create(id=1)
+        site.domain = 'alumni-system.onrender.com'    # ✅ رابط Render
         site.name = 'نظام متابعة الخريجين'
         site.save()
         print("✅ تم تحديث النطاق بنجاح!")
