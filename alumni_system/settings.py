@@ -297,3 +297,22 @@ TWO_FACTOR_PATCH_ADMIN = True
 #         "sub": "mailto:your-email@example.com"
 #     }
 # }
+
+
+# ============================================================
+# ========== ✅ إعدادات النطاق (Domain) ==========
+# ============================================================
+try:
+    from django.contrib.sites.models import Site
+    from django.apps import apps
+    
+    if apps.ready:
+        site = Site.objects.get_current()
+        site.domain = '127.0.0.1:8000'
+        site.name = 'نظام متابعة الخريجين'
+        site.save()
+        print("✅ تم تحديث النطاق بنجاح!")
+    else:
+        print("⚠️ التطبيقات لم تتحمّل بعد، سيتم تحديث النطاق عند التشغيل")
+except Exception as e:
+    print(f"⚠️ لم يتم تحديث النطاق: {e}")

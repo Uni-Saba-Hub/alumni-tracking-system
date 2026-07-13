@@ -50,15 +50,15 @@ urlpatterns = [
     
     # ====== الإشعارات ======
     path('notifications/', views.notification_list, name='notification_list'),
-    path('notifications/mark-read/<int:pk>/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/<int:pk>/mark-read/', views.mark_notification_read, name='mark_notification_read'),
     path('update-notification-preferences/', views.update_notification_preferences, name='update_notification_preferences'),
     
     # ====== قصص النجاح ======
     path('success-story/create/', views.create_success_story, name='create_success_story'),
     path('success-stories/', views.success_stories_list, name='success_stories_list'),
-    path('success-story/approve/<int:pk>/', views.approve_success_story, name='approve_success_story'),
-    path('success-story/reject/<int:pk>/', views.reject_success_story, name='reject_success_story'),
-    path('success-story/<int:pk>/delete/', views.delete_success_story, name='delete_success_story'),  # ✅ حذف قصة
+    path('success-story/<int:pk>/approve/', views.approve_success_story, name='approve_success_story'),
+    path('success-story/<int:pk>/reject/', views.reject_success_story, name='reject_success_story'),
+    path('success-story/<int:pk>/delete/', views.delete_success_story, name='delete_success_story'),
     
     # ====== الموافقات المركزية (Pending Requests) ======
     path('pending-requests/', views.pending_requests, name='pending_requests'),
@@ -66,7 +66,7 @@ urlpatterns = [
     # ====== الموافقة على المجموعات ======
     path('group/<int:pk>/approve/', views.approve_group, name='approve_group'),
     path('group/<int:pk>/reject/', views.reject_group, name='reject_group'),
-    path('group/<int:pk>/delete/', views.delete_group, name='delete_group'),  # ✅ حذف مجموعة
+    path('group/<int:pk>/delete/', views.delete_group, name='delete_group'),
     
     # ====== الموافقة على الخريجين ======
     path('approve-graduate/<int:pk>/', views.approve_graduate, name='approve_graduate'),

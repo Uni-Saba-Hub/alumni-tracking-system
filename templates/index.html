@@ -486,35 +486,34 @@
             <div class="col-lg-9">
                 <!-- باقي المحتوى (بدون تغيير) -->
                 <!-- Slider (Swiper) -->
-                <div class="swiper mySwiper mb-4">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="ad-banner" style="background: linear-gradient(135deg, #1A5F7A, #0d3b4f);">
-                                <h3><i class="fas fa-graduation-cap"></i> {% trans "منصة متابعة الخريجين" %}</h3>
-                                <p>{% trans "تواصل مع خريجين الجامعة واكتشف فرص العمل" %}</p>
-                                <a href="#" class="btn-ad">{% trans "سجل الآن" %} <i class="fas fa-arrow-left"></i></a>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="ad-banner" style="background: linear-gradient(135deg, #e67e22, #f39c12);">
-                                <h3><i class="fas fa-briefcase"></i> {% trans "أكثر من" %} {{ total_jobs|default:"0" }} {% trans "وظيفة" %} {% trans "متاحة" %}</h3>
-                                <p>{% trans "قدم الآن على فرص العمل المناسبة لك" %}</p>
-                                <a href="{% url 'jobs:job_list' %}" class="btn-ad">{% trans "استعرض الوظائف" %} <i class="fas fa-arrow-left"></i></a>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="ad-banner" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
-                                <h3><i class="fas fa-chart-line"></i> {% trans "نسبة التوظيف" %} {{ employment_rate|default:"0" }}%</h3>
-                                <p>{% trans "خريجونا هم الأفضل في سوق العمل" %}</p>
-                                <a href="#" class="btn-ad">{% trans "تعرف أكثر" %} <i class="fas fa-arrow-left"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-                
+              <div class="swiper mySwiper mb-4">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <div class="ad-banner" style="background: linear-gradient(135deg, #1A5F7A, #0d3b4f);">
+                <h3><i class="fas fa-graduation-cap"></i> {% trans "منصة متابعة الخريجين" %}</h3>
+                <p>{% trans "تواصل مع خريجين الجامعة واكتشف فرص العمل" %}</p>
+                <a href="{% url 'accounts:register' %}" class="btn-ad">{% trans "سجل الآن" %} <i class="fas fa-arrow-left"></i></a>
+            </div>
+        </div>
+        <div class="swiper-slide">
+            <div class="ad-banner" style="background: linear-gradient(135deg, #e67e22, #f39c12);">
+                <h3><i class="fas fa-briefcase"></i> {% trans "أكثر من" %} {{ total_jobs|default:"0" }} {% trans "وظيفة" %} {% trans "متاحة" %}</h3>
+                <p>{% trans "قدم الآن على فرص العمل المناسبة لك" %}</p>
+                <a href="{% url 'jobs:job_list' %}" class="btn-ad">{% trans "استعرض الوظائف" %} <i class="fas fa-arrow-left"></i></a>
+            </div>
+        </div>
+        <div class="swiper-slide">
+            <div class="ad-banner" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">
+                <h3><i class="fas fa-chart-line"></i> {% trans "نسبة التوظيف" %} {{ employment_rate|default:"0" }}%</h3>
+                <p>{% trans "خريجونا هم الأفضل في سوق العمل" %}</p>
+                <a href="{% url 'dashboard:admin_dashboard' %}" class="btn-ad">{% trans "تعرف أكثر" %} <i class="fas fa-arrow-left"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
                 <!-- إحصائيات المنصة -->
                 <div class="section-header mt-2">
                     <h5 class="section-title">📊 {% trans "إحصائيات المنصة" %}</h5>
