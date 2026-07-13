@@ -224,7 +224,6 @@ SIMPLE_JWT = {
 
 
 # ============================================================
-# ============================================================
 # ========== ✅ إعدادات البريد الإلكتروني (SendGrid) ==========
 # ============================================================
 import os
@@ -238,6 +237,7 @@ if os.environ.get('RENDER'):
     EMAIL_HOST_USER = 'apikey'
     EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
     DEFAULT_FROM_EMAIL = 'noreply@alumni-system.com'
+    EMAIL_TIMEOUT = 60  # ✅ زيادة المهلة إلى 60 ثانية
     print("📧 Render: استخدام SendGrid SMTP")
 else:
     # محلياً: استخدام Gmail
@@ -248,7 +248,10 @@ else:
     EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
     DEFAULT_FROM_EMAIL = f'نظام متابعة الخريجين <{EMAIL_HOST_USER}>'
+    EMAIL_TIMEOUT = 60
     print("📧 محلي: استخدام Gmail SMTP")
+
+
 # ============================================================
 # ========== ✅ إعدادات Allauth (Google Login, Reset Password) ==========
 # ============================================================
