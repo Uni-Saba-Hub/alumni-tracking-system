@@ -224,17 +224,23 @@ SIMPLE_JWT = {
 
 
 # ============================================================
-# ========== إعدادات البريد الإلكتروني ==========
+# ============================================================
+# ========== ✅ إعدادات البريد الإلكتروني (SendGrid) ==========
 # ============================================================
 import os
 
-# ✅ اكتشاف بيئة Render تلقائياً
+# ✅ استخدام SendGrid على Render
 if os.environ.get('RENDER'):
-    # على Render: استخدام Console (بدون إرسال فعلي)
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    print("📧 Render: استخدام Console Email Backend")
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'apikey'
+    EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+    DEFAULT_FROM_EMAIL = 'noreply@alumni-system.com'
+    print("📧 Render: استخدام SendGrid SMTP")
 else:
-    # محلياً: استخدام Gmail SMTP
+    # محلياً: استخدام Gmail
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = 587
@@ -243,7 +249,6 @@ else:
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
     DEFAULT_FROM_EMAIL = f'نظام متابعة الخريجين <{EMAIL_HOST_USER}>'
     print("📧 محلي: استخدام Gmail SMTP")
-
 # ============================================================
 # ========== ✅ إعدادات Allauth (Google Login, Reset Password) ==========
 # ============================================================
