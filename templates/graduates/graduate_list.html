@@ -234,11 +234,7 @@
             </div>
             
             <div class="dropdown">
-    <a href="#" class="user-dropdown d-flex align-items-center gap-2 text-white text-decoration-none" data-bs-toggle="dropdown">
-        <i class="fas fa-user-circle fa-lg"></i>
-        <span>{% trans "حسابي" %}</span>
-        <i class="fas fa-chevron-down fa-xs"></i>
-    </a>
+   
     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
         <li><a class="dropdown-item" href="{% url 'accounts:login' %}"><i class="fas fa-sign-in-alt ms-2"></i> {% trans "تسجيل دخول" %}</a></li>
         <li><a class="dropdown-item" href="{% url 'accounts:register' %}"><i class="fas fa-user-plus ms-2"></i> {% trans "إنشاء حساب" %}</a></li>

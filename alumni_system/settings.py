@@ -113,15 +113,16 @@ WSGI_APPLICATION = 'alumni_system.wsgi.application'
 
 
 # ============================================================
-# ========== ✅ قاعدة البيانات (PostgreSQL / SQLite) ==========
+# ========== ✅ قاعدة البيانات (اتصال دائم) ==========
 # ============================================================
-import dj_database_url
 
-# ✅ استخدام PostgreSQL إذا كان DATABASE_URL موجوداً، وإلا استخدم SQLite
+import dj_database_url
+import os
+
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    # ✅ استخدام PostgreSQL على Render
+    # ✅ استخدام PostgreSQL (نفس Render)
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
@@ -129,9 +130,9 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-    print("🐘 استخدام قاعدة بيانات PostgreSQL")
+    print("🐘 استخدام قاعدة بيانات PostgreSQL (اتصال دائم)")
 else:
-    # ✅ استخدام SQLite محلياً
+    # ✅ استخدام SQLite محلياً (بديل)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -139,8 +140,6 @@ else:
         }
     }
     print("📁 استخدام قاعدة بيانات SQLite")
-
-
 # ============================================================
 # ========== التحقق من كلمة المرور ==========
 # ============================================================
@@ -206,9 +205,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # ============================================================
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
-
-
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 # ============================================================
 # ========== النماذج الافتراضية ==========
 # ============================================================
@@ -241,26 +238,20 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 # ============================================================
-# ========== ✅ إعدادات البريد الإلكتروني (SendGrid) ==========
+# ========== ✅ إعدادات البريد الإلكتروني (مع SSL) ==========
 # ============================================================
 
-import os
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.sendgrid.net')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'apikey')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '4alslah4@gmail.com')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '4alslah4@gmail.com'
+EMAIL_HOST_PASSWORD = 'wjrv yonr sjql aqei'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False  # ✅ تأكد من أنه False
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None
+DEFAULT_FROM_EMAIL = '4alslah4@gmail.com'
 EMAIL_TIMEOUT = 60
-
-if not EMAIL_HOST_PASSWORD:
-    print("⚠️ تحذير: EMAIL_HOST_PASSWORD غير مضبوط! استخدم Console Backend.")
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    print("📧 استخدام SendGrid SMTP للإرسال الفعلي")
-
 # ============================================================
 # ========== ✅ إعدادات Allauth (Google Login, Reset Password) ==========
 # ============================================================

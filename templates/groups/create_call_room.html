@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "إنشاء غرفة مكالمة" %} - {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="direction: rtl; text-align: right;">
+
+    <!-- ====== رأس الصفحة مع زر العودة ====== -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{% url 'groups:group_detail' group.id %}" class="btn-back-icon" title="العودة للمجموعة">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        <div>
+            <h4 class="fw-bold mb-0" style="color: #1A3A5C;">
+                <i class="fas fa-video me-2" style="color: #C9A94E;"></i>
+                {% trans "إنشاء غرفة مكالمة" %}
+            </h4>
+            <p class="text-muted small mb-0">{{ group.name }}</p>
+        </div>
+    </div>
+
+    <!-- ====== بطاقة النموذج ====== -->
+    <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-transparent border-0 pt-4">
+            <h5 class="fw-bold mb-0">{% trans "تفاصيل الغرفة" %}</h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "اسم الغرفة" %} <span class="text-danger">*</span></label>
+                    <input type="text" name="room_name" class="form-control form-control-lg rounded-3" required 
+                           placeholder="{% trans 'مثال: نقاش حول التخرج' %}" 
+                           value="غرفة {{ group.name }}" style="border-color: #e9ecef;">
+                    <div class="form-text text-muted">{% trans "اسم يعبر عن محتوى المكالمة" %}</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "نوع الغرفة" %}</label>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="room_type" id="video" value="video" checked>
+                            <label class="form-check-label" for="video">
+                                <i class="fas fa-video text-success me-1"></i> {% trans "فيديو" %}
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="room_type" id="audio" value="audio">
+                            <label class="form-check-label" for="audio">
+                                <i class="fas fa-headphones text-primary me-1"></i> {% trans "صوت فقط" %}
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="room_type" id="live" value="live">
+                            <label class="form-check-label" for="live">
+                                <i class="fas fa-broadcast-tower text-danger me-1"></i> {% trans "بث مباشر" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- معلومات إضافية -->
+                <div class="alert alert-info small rounded-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    {% trans "سيتم إشعار جميع أعضاء المجموعة عند إنشاء الغرفة." %}
+                    <br>
+                    <i class="fas fa-users me-2"></i>
+                    {% trans "يمكن للأعضاء الانضمام عبر رابط الغرفة." %}
+                </div>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    <button type="submit" class="btn btn-success rounded-pill px-5 py-2 fw-bold" 
+                            style="background: linear-gradient(135deg, #27ae60, #1e8449); border: none;">
+                        <i class="fas fa-plus-circle me-2"></i> {% trans "إنشاء الغرفة" %}
+                    </button>
+                    <a href="{% url 'groups:group_detail' group.id %}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">
+                        <i class="fas fa-times me-2"></i> {% trans "إلغاء" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== معلومات إضافية ====== -->
+    <div class="card border-0 shadow-sm rounded-4 mt-4 mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3"><i class="fas fa-lightbulb me-2" style="color: #C9A94E;"></i> {% trans "نصائح" %}</h6>
+            <ul class="list-unstyled small">
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {% trans "يمكنك إنشاء غرفة فيديو للاجتماعات المباشرة." %}
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {% trans "غرفة الصوت مناسبة للمناقشات السريعة." %}
+                </li>
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {% trans "البث المباشر يسمح بمشاهدين غير محدودين." %}
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {% trans "يمكنك إنهاء الغرفة في أي وقت." %}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .btn-back-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1A3A5C, #0d3b4f);
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(26, 58, 92, 0.25);
+        flex-shrink: 0;
+    }
+    .btn-back-icon:hover {
+        transform: scale(1.05) translateX(-4px);
+        color: white;
+        background: linear-gradient(135deg, #C9A94E, #b8973a);
+    }
+    .form-control:focus {
+        border-color: #C9A94E;
+        box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.12);
+    }
+    .form-check-input:checked {
+        background-color: #1A3A5C;
+        border-color: #1A3A5C;
+    }
+    .btn-success:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+    }
+    @media (max-width: 576px) {
+        .btn-back-icon { width: 38px; height: 38px; }
+        .form-check { font-size: 0.9rem; }
+    }
+</style>
+{% endblock %}

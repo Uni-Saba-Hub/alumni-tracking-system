@@ -1,57 +1,89 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load i18n %}
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء مجموعة جديدة</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-primary text-white text-center rounded-top-4 py-3">
-                        <h4 class="mb-0"><i class="fas fa-users"></i> إنشاء مجموعة جديدة</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">اسم المجموعة <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" required>
-                                <div class="form-text text-muted">اسم فريد للمجموعة (لا يمكن تكراره)</div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">الوصف</label>
-                                <textarea name="description" class="form-control" rows="3"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">الفئة</label>
-                                <input type="text" name="category" class="form-control" placeholder="مثال: تقنية معلومات، دفعة 2024">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">صورة الغلاف (اختياري)</label>
-                                <input type="file" name="image" class="form-control" accept="image/*">
-                            </div>
-                            <div class="alert alert-info small">
-                                <i class="fas fa-info-circle"></i> سيتم مراجعة طلبك من قبل الإدارة قبل الموافقة على المجموعة.
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary flex-grow-1 py-2 fw-bold">إنشاء المجموعة</button>
-                                <a href="{% url 'groups:group_list' %}" class="btn btn-outline-secondary flex-grow-1 py-2 fw-bold">{% trans "إلغاء" %}</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+{% load static %}
+
+{% block title %}{% trans "إنشاء مجموعة" %} - {% trans "جامعة إقليم سبأ" %}{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="direction: rtl; text-align: right;">
+
+    <!-- رأس الصفحة -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{% url 'groups:group_list' %}" class="btn-back-icon" title="العودة للمجموعات">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        <div>
+            <h4 class="fw-bold mb-0" style="color: #1A3A5C;">
+                <i class="fas fa-plus-circle me-2" style="color: #C9A94E;"></i>
+                {% trans "إنشاء مجموعة جديدة" %}
+            </h4>
+            <p class="text-muted small mb-0">{% trans "أنشئ مجموعة جديدة للتواصل مع الخريجين" %}</p>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+    <!-- نموذج إنشاء المجموعة -->
+    <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 700px;">
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "اسم المجموعة" %} <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control form-control-lg rounded-3" required placeholder="{% trans 'مثال: مطورو اليمن' %}" style="border-color: #e9ecef;">
+                    <div class="form-text text-muted">{% trans "اسم فريد للمجموعة (لا يمكن تكراره)" %}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "الوصف" %}</label>
+                    <textarea name="description" class="form-control rounded-3" rows="4" placeholder="{% trans 'وصف المجموعة وأهدافها...' %}" style="border-color: #e9ecef;"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "الفئة" %}</label>
+                    <input type="text" name="category" class="form-control rounded-3" placeholder="{% trans 'مثال: تقنية معلومات، دفعة 2024' %}" style="border-color: #e9ecef;">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% trans "صورة الغلاف (اختياري)" %}</label>
+                    <input type="file" name="image" class="form-control rounded-3" accept="image/*" style="border-color: #e9ecef;">
+                    <div class="form-text text-muted">{% trans "صورة تعبر عن المجموعة (يفضل 800x400)" %}</div>
+                </div>
+                <div class="alert alert-info small rounded-3">
+                    <i class="fas fa-info-circle me-2"></i> {% trans "سيتم مراجعة طلبك من قبل الإدارة قبل الموافقة على المجموعة." %}
+                </div>
+                <div class="d-flex gap-3 flex-wrap">
+                    <button type="submit" class="btn btn-success rounded-pill px-5 py-2 fw-bold" style="background: linear-gradient(135deg, #27ae60, #1e8449); border: none;">
+                        <i class="fas fa-save me-2"></i> {% trans "إنشاء المجموعة" %}
+                    </button>
+                    <a href="{% url 'groups:group_list' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">
+                        <i class="fas fa-times me-2"></i> {% trans "إلغاء" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .btn-back-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1A3A5C, #0d3b4f);
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(26, 58, 92, 0.25);
+        flex-shrink: 0;
+    }
+    .btn-back-icon:hover {
+        transform: scale(1.05) translateX(-4px);
+        color: white;
+        background: linear-gradient(135deg, #C9A94E, #b8973a);
+    }
+    .form-control:focus {
+        border-color: #C9A94E;
+        box-shadow: 0 0 0 4px rgba(201, 169, 78, 0.12);
+    }
+</style>
+{% endblock %}

@@ -451,14 +451,14 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                         {% if user.is_authenticated %}
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="fas fa-id-card ms-2"></i> {% trans "ملفي الشخصي" %}</a></li>
-<li><hr class="dropdown-divider"></li>
-<li><a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt ms-2"></i> {% trans "تسجيل خروج" %}</a></li>
-{% else %}
-<li><a class="dropdown-item" href="{% url 'accounts:login' %}"><i class="fas fa-sign-in-alt ms-2"></i> {% trans "تسجيل دخول" %}</a></li>
-<li><a class="dropdown-item" href="{% url 'accounts:register' %}"><i class="fas fa-user-plus ms-2"></i> {% trans "إنشاء حساب" %}</a></li>
-{% endif %}
-<li><hr class="dropdown-divider"></li>
-<li><a class="dropdown-item" href="#" id="darkModeToggle"><i class="fas fa-moon ms-2"></i> {% trans "الوضع الداكن" %}</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}?next=/accounts/login/"><i class="fas fa-sign-out-alt ms-2"></i> {% trans "تسجيل خروج" %}</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'accounts:login' %}"><i class="fas fa-sign-in-alt ms-2"></i> {% trans "تسجيل دخول" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:register' %}"><i class="fas fa-user-plus ms-2"></i> {% trans "إنشاء حساب" %}</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="darkModeToggle"><i class="fas fa-moon ms-2"></i> {% trans "الوضع الداكن" %}</a></li>
                     </ul>
                 </div>
             </div>
@@ -473,7 +473,7 @@
                 <div class="sidebar">
                     <h5 class="sidebar-title"><i class="fas fa-bars"></i> {% trans "القائمة" %}</h5>
                     <div class="nav flex-column">
-                        <a class="nav-link active" href="{% url 'home' %}"><i class="fas fa-home"></i> {% trans "الرئيسية" %}</a>
+                   <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> {% trans "الرئيسية" %}</a>
                         <a class="nav-link" href="{% url 'graduate_list' %}"><i class="fas fa-users"></i> {% trans "الخريجين" %}</a>
                         <a class="nav-link" href="{% url 'employer_list' %}"><i class="fas fa-building"></i> {% trans "الشركات" %}</a>
                         <a class="nav-link" href="{% url 'jobs:job_list' %}"><i class="fas fa-briefcase"></i> {% trans "الوظائف" %}</a>

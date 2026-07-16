@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "تسجيل الخروج" %} - {% trans "جامعة إقليم سبأ" %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0d3b4f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(201, 169, 78, 0.03);
+            animation: float 12s infinite ease-in-out;
+        }
+        .circle:nth-child(1) { width: 400px; height: 400px; top: -150px; right: -150px; animation-delay: 0s; }
+        .circle:nth-child(2) { width: 300px; height: 300px; bottom: 50px; left: -100px; animation-delay: 3s; }
+        .circle:nth-child(3) { width: 200px; height: 200px; bottom: 30%; right: 10%; animation-delay: 6s; }
+        .circle:nth-child(4) { width: 500px; height: 500px; top: 40%; left: -200px; animation-delay: 2s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(10deg); }
+        }
+        
+        .logout-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px 35px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid rgba(201, 169, 78, 0.15);
+            transition: transform 0.3s ease;
+            text-align: center;
+            margin: auto;
+        }
+        .logout-card:hover { transform: translateY(-5px); }
+        
+        .logout-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .logout-icon i {
+            font-size: 55px;
+            color: #C9A94E;
+            background: linear-gradient(135deg, #1A3A5C, #0d3b4f);
+            padding: 20px;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(26, 58, 92, 0.3);
+            border: 3px solid rgba(201, 169, 78, 0.2);
+            animation: pulse 3s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(26,58,92,0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 8px 40px rgba(201,169,78,0.2); }
+        }
+        
+        .logout-card h3 {
+            font-weight: 800;
+            color: #1A3A5C;
+            font-size: 26px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .logout-card .subtitle {
+            color: #6c7a8a;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .university-name {
+            font-size: 12px;
+            color: #C9A94E;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+        .university-name i { margin-left: 6px; }
+        
+        .btn-logout {
+            background: linear-gradient(135deg, #1A3A5C, #0d3b4f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 13px 40px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #C9A94E, #b8973a);
+            color: #1A3A5C;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(201, 169, 78, 0.3);
+        }
+        .btn-logout i { margin-left: 8px; }
+        
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #e9ecef;
+        }
+        .home-link a {
+            color: #1A3A5C;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .home-link a:hover { color: #C9A94E; }
+        .home-link a i { margin-left: 6px; }
+        
+        @media (max-width: 576px) {
+            .logout-card { padding: 25px 20px; }
+            .logout-icon i { width: 70px; height: 70px; font-size: 40px; padding: 15px; }
+            .logout-card h3 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+
+<div class="container" style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <div class="logout-card">
+        <div class="logout-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h3>{% trans "تم الخروج" %}</h3>
+        <p class="subtitle">{% trans "شكرا لقضاء بعض الوقت الجيد في الموقع اليوم." %}</p>
+        <div class="university-name">
+            <i class="fas fa-university"></i> {% trans "جامعة إقليم سبأ" %}
+        </div>
+
+        <!-- ✅ زر العودة لتسجيل الدخول -->
+        <a href="{% url 'login' %}" class="btn-logout">
+            <i class="fas fa-sign-in-alt"></i> {% trans "ادخل مجدداً" %}
+        </a>
+
+        <!-- ✅ رابط الصفحة الرئيسية -->
+        <div class="home-link">
+            <a href="{% url 'home' %}">
+                <i class="fas fa-arrow-right"></i> {% trans "العودة إلى الصفحة الرئيسية" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

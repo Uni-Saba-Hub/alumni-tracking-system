@@ -717,8 +717,7 @@
                                 <li><a class="dropdown-item" href="{% url 'home' %}"><i class="fas fa-home"></i> {% trans "الواجهة الرئيسية" %}</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" id="darkModeToggle"><i class="fas fa-moon"></i> {% trans "الوضع الداكن" %}</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> {% trans "تسجيل خروج" %}</a></li>
-                            </ul>
+<li><a class="dropdown-item" href="{% url 'accounts:logout' %}?next=/accounts/login/"><i class="fas fa-sign-out-alt"></i> {% trans "تسجيل خروج" %}</a></li>                            </ul>
                         </div>
                     </div>
                 </div>

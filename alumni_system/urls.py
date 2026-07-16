@@ -7,16 +7,15 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import views as auth_views
 from graduates.views import home
 from . import views
-from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # ============================================================
-    # ✅ الصفحة الرئيسية = صفحة تسجيل الدخول
-    # ============================================================
-    path('', LoginView.as_view(template_name='registration/login.html'), name='login'),  # ✅ تم التعديل
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    # ✅ الصفحة الرئيسية = صفحة تسجيل الدخول (دائماً)
+    path('', LoginView.as_view(
+        template_name='registration/login.html',
+        redirect_authenticated_user=False  # ✅ لا يعيد توجيه المستخدمين المسجلين
+    ), name='login'),
     
     # ============================================================
     # ✅ إعادة تعيين كلمة المرور (Password Reset)
@@ -51,11 +50,6 @@ urlpatterns = [
     # ✅ Allauth (تسجيل جوجل، نسيت كلمة المرور)
     # ============================================================
     path('auth/', include('allauth.urls')),
-    
-    # ============================================================
-    # ✅ 2FA (معلق)
-    # ============================================================
-    # path('2fa/', include('two_factor.urls')),
     
     # ============================================================
     # ✅ تطبيقات المشروع

@@ -251,9 +251,27 @@ def create_topic(request, group_pk):
 @login_required
 def topic_detail(request, group_pk, topic_pk):
     """عرض تفاصيل موضوع مع التعليقات"""
-    group = get_object_or_404(Group, pk=group_pk, is_active=True)
-    topic = get_object_or_404(Topic, pk=topic_pk, group=group)
     
+    # ✅ التحقق من وجود المجموعة
+    try:
+        group = Group.objects.get(pk=group_pk, is_active=True)
+    except Group.DoesNotExist:
+        messages.error(request, '⚠️ المجموعة غير موجودة أو غير نشطة.')
+        return redirect('groups:group_list')
+    
+    # ✅ التحقق من وجود الموضوع
+    try:
+        topic = Topic.objects.get(pk=topic_pk, group=group)
+    except Topic.DoesNotExist:
+        messages.error(request, '⚠️ الموضوع غير موجود أو تم حذفه.')
+        return redirect('groups:topic_list', group_pk=group_pk)
+    
+    # ✅ التأكد من صلاحية الوصول
+    if not request.user.is_staff and group.status != 'approved':
+        messages.error(request, '⚠️ هذه المجموعة غير متاحة حالياً.')
+        return redirect('groups:group_list')
+    
+    # معالجة إضافة تعليق
     if request.method == 'POST':
         content = request.POST.get('content')
         parent_id = request.POST.get('parent_id')
@@ -270,9 +288,9 @@ def topic_detail(request, group_pk, topic_pk):
                     comment.save()
                 except Comment.DoesNotExist:
                     pass
-            messages.success(request, 'تم إضافة تعليقك.')
+            messages.success(request, '✅ تم إضافة تعليقك.')
         else:
-            messages.error(request, 'الرجاء كتابة تعليق.')
+            messages.error(request, '⚠️ الرجاء كتابة تعليق.')
         return redirect('groups:topic_detail', group_pk=group.pk, topic_pk=topic.pk)
     
     # جلب التعليقات مع الردود
@@ -283,7 +301,6 @@ def topic_detail(request, group_pk, topic_pk):
         'topic': topic,
         'comments': comments
     })
-
 
 @login_required
 def topic_update(request, group_pk, topic_pk):

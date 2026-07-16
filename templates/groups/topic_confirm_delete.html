@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "حذف موضوع" %} - {{ topic.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="direction: rtl; text-align: right;">
+
+    <!-- ====== رأس الصفحة مع زر العودة ====== -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{% url 'groups:topic_detail' topic.group.id topic.id %}" class="btn-back-icon" title="العودة للموضوع">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        <div>
+            <h4 class="fw-bold mb-0" style="color: #1A3A5C;">
+                <i class="fas fa-trash me-2" style="color: #e74c3c;"></i>
+                {% trans "حذف الموضوع" %}
+            </h4>
+            <p class="text-muted small mb-0">{{ topic.title }}</p>
+        </div>
+    </div>
+
+    <!-- ====== بطاقة التأكيد ====== -->
+    <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 600px;">
+        <div class="card-body p-4 text-center">
+            <!-- أيقونة تحذير -->
+            <div class="mb-4">
+                <div class="warning-icon d-flex align-items-center justify-content-center mx-auto" 
+                     style="width: 80px; height: 80px; border-radius: 50%; background: rgba(231, 76, 60, 0.1);">
+                    <i class="fas fa-exclamation-triangle fa-3x" style="color: #e74c3c;"></i>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3" style="color: #1A3A5C;">
+                {% trans "هل أنت متأكد من حذف هذا الموضوع؟" %}
+            </h5>
+
+            <p class="text-muted mb-4">
+                {% trans "سيتم حذف الموضوع وجميع التعليقات المرتبطة به نهائياً. هذا الإجراء لا يمكن التراجع عنه." %}
+            </p>
+
+            <!-- معلومات الموضوع -->
+            <div class="bg-light rounded-3 p-3 mb-4 text-start">
+                <div class="d-flex flex-wrap justify-content-between">
+                    <span class="fw-bold">{% trans "العنوان:" %}</span>
+                    <span>{{ topic.title }}</span>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between mt-2">
+                    <span class="fw-bold">{% trans "المنشئ:" %}</span>
+                    <span>{{ topic.created_by.get_full_name|default:topic.created_by.username }}</span>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between mt-2">
+                    <span class="fw-bold">{% trans "التاريخ:" %}</span>
+                    <span>{{ topic.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between mt-2">
+                    <span class="fw-bold">{% trans "عدد التعليقات:" %}</span>
+                    <span>{{ topic.comments.count }}</span>
+                </div>
+            </div>
+
+            <!-- أزرار الإجراءات -->
+            <div class="d-flex gap-3 flex-wrap justify-content-center">
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger rounded-pill px-5 py-2 fw-bold" 
+                            style="background: linear-gradient(135deg, #e74c3c, #c0392b); border: none;">
+                        <i class="fas fa-trash me-2"></i> {% trans "نعم، احذف" %}
+                    </button>
+                </form>
+                <a href="{% url 'groups:topic_detail' topic.group.id topic.id %}" 
+                   class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">
+                    <i class="fas fa-times me-2"></i> {% trans "إلغاء" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .btn-back-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1A3A5C, #0d3b4f);
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(26, 58, 92, 0.25);
+        flex-shrink: 0;
+    }
+    .btn-back-icon:hover {
+        transform: scale(1.05) translateX(-4px);
+        color: white;
+        background: linear-gradient(135deg, #C9A94E, #b8973a);
+    }
+    .warning-icon {
+        animation: pulse-warning 2s infinite;
+    }
+    @keyframes pulse-warning {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    .btn-danger:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+    }
+    @media (max-width: 576px) {
+        .btn-back-icon { width: 38px; height: 38px; }
+        .bg-light .d-flex { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+</style>
+{% endblock %}
